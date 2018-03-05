@@ -25,6 +25,6 @@ to worry about anything if you use IGT, though, apart from the fact there is no 
 boards yet. So you probably won't want to actually use that part of the autosplitter yet.
 
 You then need to install Distance Autosplitter plugin. Grab the latest .dll from the
-[releases page](https://github.com/TntMatthew/DistanceAutosplitter/releases), and drop
+[releases page](https://github.com/TntMatthew/DistanceSpectrumAutosplitter/releases), and drop
 it in your `Distance_Data/Spectrum/Plugins` directory. And you're done - the timer will
 automatically start once IGT begins, and will split after each level is completed.
