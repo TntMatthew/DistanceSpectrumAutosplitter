@@ -19,17 +19,46 @@ namespace DistanceAutosplitter
 
         TimeSpan totalElapsedTime = new TimeSpan();
         bool countingTime = false;
+        bool started = false;
 
         Socket livesplitSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         public void Initialize(IManager manager)
         {
-            livesplitSocket.Connect("localhost", 16834);
-            livesplitSocket.Send(Encoding.UTF8.GetBytes($"initgametime\r\n"));
+            try
+            {
+                livesplitSocket.Connect("localhost", 16834);
+                livesplitSocket.Send(Encoding.UTF8.GetBytes($"initgametime\r\n"));
+                Console.WriteLine("Connected successfully.");
+            }
+            catch (SocketException e)
+            {
+                Console.WriteLine($"Failed to connect to the LiveSplit server: {e.Message}");
+            }
+
+            Race.Loaded += (sender, args) =>
+            {
+                if (Game.CurrentMode == Spectrum.Interop.Game.GameMode.Adventure && !started && Game.LevelName == "Broken Symmetry")
+                {
+                    if (!livesplitSocket.Connected)
+                    {
+                        try
+                        {
+                            livesplitSocket.Connect("localhost", 16834);
+                            livesplitSocket.Send(Encoding.UTF8.GetBytes($"initgametime\r\n"));
+                            Console.WriteLine("Connected successfully.");
+                        }
+                        catch (SocketException e)
+                        {
+                            Console.WriteLine($"Failed to connect to the LiveSplit server: {e.Message}");
+                        }
+                    }
+                }
+            };
 
             LocalVehicle.Finished += (sender, args) =>
             {
-                if (Game.CurrentMode == Spectrum.Interop.Game.GameMode.Adventure)
+                if (Game.CurrentMode == Spectrum.Interop.Game.GameMode.Adventure && started)
                 {
                     totalElapsedTime += Race.ElapsedTime;
                     livesplitSocket.Send(Encoding.UTF8.GetBytes($"setgametime {totalElapsedTime.TotalSeconds}\r\n"));
@@ -39,6 +68,7 @@ namespace DistanceAutosplitter
                     if (Game.LevelName == "Credits")
                     {
                         totalElapsedTime = new TimeSpan();
+                        started = true;
                     }
                 }
             };
@@ -47,25 +77,23 @@ namespace DistanceAutosplitter
             {
                 if (Game.CurrentMode == Spectrum.Interop.Game.GameMode.Adventure)
                 {
-                    Console.WriteLine("started");
-                    Console.WriteLine(Game.LevelName);
                     if (Game.LevelName == "Broken Symmetry")
                     {
                         livesplitSocket.Send(Encoding.UTF8.GetBytes("starttimer\r\n"));
+                        started = true;
                     }
-                    else
+                    else if (started)
                     {
                         livesplitSocket.Send(Encoding.UTF8.GetBytes("unpausegametime\r\n"));
                     }
                 }
                 countingTime = true;
             };
-
         }
 
         public void Update()
         {
-            if (countingTime)
+            if (countingTime && livesplitSocket.Connected)
             {
                 TimeSpan countingTime = totalElapsedTime + Race.ElapsedTime;
                 livesplitSocket.Send(Encoding.UTF8.GetBytes($"setgametime {countingTime.TotalSeconds}\r\n"));
