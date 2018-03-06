@@ -20,6 +20,7 @@ namespace DistanceAutosplitter
         TimeSpan totalElapsedTime = new TimeSpan();
         bool countingTime = false;
         bool started = false;
+        bool justFinished = false;
 
         Socket livesplitSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -68,7 +69,8 @@ namespace DistanceAutosplitter
                     if (Game.LevelName == "Credits")
                     {
                         totalElapsedTime = new TimeSpan();
-                        started = true;
+                        started = false;
+                        justFinished = true;
                     }
                 }
             };
@@ -88,6 +90,21 @@ namespace DistanceAutosplitter
                     }
                 }
                 countingTime = true;
+            };
+
+            MainMenu.Loaded += (sender, args) =>
+            {
+                if (started && !justFinished)
+                {
+                    totalElapsedTime = new TimeSpan();
+                    started = false;
+                    countingTime = false;
+                    livesplitSocket.Send(Encoding.UTF8.GetBytes("reset\r\n"));
+                }
+                else
+                {
+                    justFinished = false;
+                }
             };
         }
 
