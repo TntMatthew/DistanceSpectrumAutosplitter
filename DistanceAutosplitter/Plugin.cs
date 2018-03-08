@@ -99,11 +99,11 @@ namespace DistanceAutosplitter
 
             MainMenu.Loaded += (sender, args) =>
             {
+                totalElapsedTime = new TimeSpan();
+                started = false;
+                countingTime = false;
                 if (started && !justFinished)
                 {
-                    totalElapsedTime = new TimeSpan();
-                    started = false;
-                    countingTime = false;
                     SendData("reset");
                 }
                 else
