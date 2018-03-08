@@ -62,9 +62,9 @@ namespace DistanceAutosplitter
                 if (Game.CurrentMode == Spectrum.Interop.Game.GameMode.Adventure && started)
                 {
                     totalElapsedTime += Race.ElapsedTime;
-                    livesplitSocket.Send(Encoding.UTF8.GetBytes($"setgametime {totalElapsedTime.TotalSeconds}\r\n"));
-                    livesplitSocket.Send(Encoding.UTF8.GetBytes("split\r\n"));
-                    livesplitSocket.Send(Encoding.UTF8.GetBytes("pausegametime\r\n"));
+                    SendData($"setgametime {totalElapsedTime.TotalSeconds}");
+                    SendData("split");
+                    SendData("pausegametime\r\n");
                     countingTime = false;
                     if (Game.LevelName == "Credits")
                     {
@@ -81,12 +81,12 @@ namespace DistanceAutosplitter
                 {
                     if (Game.LevelName == "Broken Symmetry")
                     {
-                        livesplitSocket.Send(Encoding.UTF8.GetBytes("starttimer\r\n"));
+                        SendData("starttimer");
                         started = true;
                     }
                     else if (started)
                     {
-                        livesplitSocket.Send(Encoding.UTF8.GetBytes("unpausegametime\r\n"));
+                        SendData("unpausegametime");
                     }
                 }
                 countingTime = true;
@@ -99,7 +99,7 @@ namespace DistanceAutosplitter
                     totalElapsedTime = new TimeSpan();
                     started = false;
                     countingTime = false;
-                    livesplitSocket.Send(Encoding.UTF8.GetBytes("reset\r\n"));
+                    SendData("reset");
                 }
                 else
                 {
@@ -113,13 +113,31 @@ namespace DistanceAutosplitter
             if (countingTime && livesplitSocket.Connected)
             {
                 TimeSpan countingTime = totalElapsedTime + Race.ElapsedTime;
-                livesplitSocket.Send(Encoding.UTF8.GetBytes($"setgametime {countingTime.TotalSeconds}\r\n"));
+                SendData($"setgametime {countingTime.TotalSeconds}");
             }
         }
 
         public void Shutdown()
         {
 
+        }
+   
+        void SendData(string command)
+        {
+            if (livesplitSocket.Connected)
+            {
+                try
+                {
+                    livesplitSocket.Send(Encoding.UTF8.GetBytes($"{command}\r\n"));
+                }
+                catch (SocketException e)
+                {
+                    Console.WriteLine($"Failed to send data to LiveSplit server: {e.Message}");
+                    Console.WriteLine("Disconnecting...");
+                    livesplitSocket.Disconnect(false);
+                    livesplitSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                }
+            }
         }
     }
 }
