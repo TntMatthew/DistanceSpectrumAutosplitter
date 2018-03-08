@@ -3,8 +3,11 @@ This is a Spectrum plugin that provides automatic splits, resets, and an IGT tim
 through LiveSplit Server.
 
 This is very early in development. I haven't actually used this in a full run yet, so I don't know if
-everything works properly (it should). There's no option to disable it yet, so until I get that in, I am
-currently locking it to only work in Adventure mode.
+everything works properly (it should). This currently supports both Adventure, Sprint SS, and Challenge SS
+runs. All Levels may or may not be added due to complexity.
+
+If you want to play the game without having the timer split a bunch on you, just stop the server in LiveSplit.
+It should handle it just fine.
 
 **Note**: It is not yet decided whether or not using Spectrum will be allowed for runs, so this might be useless.
 We'll see. 
