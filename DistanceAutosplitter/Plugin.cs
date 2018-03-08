@@ -39,7 +39,7 @@ namespace DistanceAutosplitter
 
             Race.Loaded += (sender, args) =>
             {
-                if (Game.CurrentMode == Spectrum.Interop.Game.GameMode.Adventure && !started && Game.LevelName == "Broken Symmetry")
+                if (!started && (Game.LevelName == "Broken Symmetry" || Game.LevelName == "Dodge"))
                 {
                     if (!livesplitSocket.Connected)
                     {
@@ -59,14 +59,14 @@ namespace DistanceAutosplitter
 
             LocalVehicle.Finished += (sender, args) =>
             {
-                if (Game.CurrentMode == Spectrum.Interop.Game.GameMode.Adventure && started)
+                if (started)
                 {
                     totalElapsedTime += Race.ElapsedTime;
                     SendData($"setgametime {totalElapsedTime.TotalSeconds}");
                     SendData("split");
                     SendData("pausegametime");
                     countingTime = false;
-                    if (Game.LevelName == "Credits")
+                    if (Game.LevelName == "Credits" || Game.LevelName == "The Manor" || Game.LevelName == "Elevation")
                     {
                         totalElapsedTime = new TimeSpan();
                         started = false;
@@ -77,17 +77,14 @@ namespace DistanceAutosplitter
 
             Race.Started += (sender, args) =>
             {
-                if (Game.CurrentMode == Spectrum.Interop.Game.GameMode.Adventure)
+                if (Game.LevelName == "Broken Symmetry" || Game.LevelName == "Dodge")
                 {
-                    if (Game.LevelName == "Broken Symmetry")
-                    {
-                        SendData("starttimer");
-                        started = true;
-                    }
-                    else if (started)
-                    {
-                        SendData("unpausegametime");
-                    }
+                    SendData("starttimer");
+                    started = true;
+                }
+                else if (started)
+                {
+                    SendData("unpausegametime");
                 }
                 countingTime = true;
             };
