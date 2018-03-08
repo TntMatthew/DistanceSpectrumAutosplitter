@@ -64,7 +64,7 @@ namespace DistanceAutosplitter
                     totalElapsedTime += Race.ElapsedTime;
                     SendData($"setgametime {totalElapsedTime.TotalSeconds}");
                     SendData("split");
-                    SendData("pausegametime\r\n");
+                    SendData("pausegametime");
                     countingTime = false;
                     if (Game.LevelName == "Credits")
                     {
