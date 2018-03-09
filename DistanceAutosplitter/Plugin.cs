@@ -21,7 +21,6 @@ namespace DistanceAutosplitter
         bool countingTime = false;
         bool started = false;
         bool justFinished = false;
-        bool challengeRestart = false;
 
         Socket livesplitSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -64,7 +63,7 @@ namespace DistanceAutosplitter
                 {
                     totalElapsedTime += Race.ElapsedTime;
                     SendData($"setgametime {totalElapsedTime.TotalSeconds}");
-                    if (!challengeRestart)
+                    if (args.Type == RaceEndType.Finished)
                     {
                         SendData("split");
                     }
@@ -91,10 +90,6 @@ namespace DistanceAutosplitter
                     SendData("unpausegametime");
                 }
                 countingTime = true;
-                if (challengeRestart)
-                {
-                    challengeRestart = false;
-                }
             };
 
             MainMenu.Loaded += (sender, args) =>
@@ -109,13 +104,6 @@ namespace DistanceAutosplitter
                 else
                 {
                     justFinished = false;
-                }
-            };
-
-            LocalVehicle.Exploded += (sender, args) => {
-                if (Game.CurrentMode == Spectrum.Interop.Game.GameMode.Challenge)
-                {
-                    challengeRestart = true;
                 }
             };
         }
