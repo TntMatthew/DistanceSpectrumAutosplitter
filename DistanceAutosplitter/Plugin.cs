@@ -126,7 +126,7 @@ namespace DistanceAutosplitter
                 if (started)
                 {
                     totalElapsedTime += Race.ElapsedTime;
-                    SendData($"setgametime {totalElapsedTime.TotalSeconds}");
+                    SendData($"setgametime {totalElapsedTime.TotalSeconds + 0.01}");
                     if (args.Type == RaceEndType.Finished)
                     {
                         SendData("split");
