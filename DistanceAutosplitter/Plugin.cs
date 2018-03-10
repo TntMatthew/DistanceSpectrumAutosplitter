@@ -18,7 +18,8 @@ namespace DistanceAutosplitter
         public APILevel CompatibleAPILevel => APILevel.XRay;
 
         TimeSpan totalElapsedTime = new TimeSpan();
-        bool countingTime = false;
+        bool inLoad = false;
+        bool paused = false;
         bool started = false;
         bool justFinished = false;
 
@@ -68,7 +69,7 @@ namespace DistanceAutosplitter
                         SendData("split");
                     }
                     SendData("pausegametime");
-                    countingTime = false;
+                    inLoad = true;
                     if (Game.LevelName == "Credits" || Game.LevelName == "The Manor" || Game.LevelName == "Elevation")
                     {
                         totalElapsedTime = new TimeSpan();
@@ -89,7 +90,7 @@ namespace DistanceAutosplitter
                 {
                     SendData("unpausegametime");
                 }
-                countingTime = true;
+                inLoad = false;
             };
 
             MainMenu.Loaded += (sender, args) =>
@@ -98,7 +99,7 @@ namespace DistanceAutosplitter
                 {
                     totalElapsedTime = new TimeSpan();
                     started = false;
-                    countingTime = false;
+                    inLoad = false;
                     SendData("reset");
                 }
                 else
@@ -110,10 +111,28 @@ namespace DistanceAutosplitter
 
         public void Update()
         {
-            if (countingTime && livesplitSocket.Connected)
+            if (!inLoad && livesplitSocket.Connected)
             {
-                TimeSpan countingTime = totalElapsedTime + Race.ElapsedTime;
-                SendData($"setgametime {countingTime.TotalSeconds}");
+                TimeSpan elapsedTime = totalElapsedTime + Race.ElapsedTime;
+
+                if (G.Sys.GameManager_.PauseMenuOpen_)
+                {
+                    if (!paused)
+                    {
+                        SendData($"setgametime {elapsedTime.TotalSeconds}");
+                        SendData("pausegametime");
+                        paused = true;
+                    }
+                }
+                else
+                {
+                    if (paused)
+                    {
+                        SendData("unpausegametime");
+                        paused = false;
+                    }
+                }
+                
             }
         }
 
