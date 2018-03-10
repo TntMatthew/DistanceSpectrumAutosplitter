@@ -4,6 +4,7 @@ using Spectrum.Interop.Game;
 using Spectrum.Interop.Game.Vehicle;
 using Spectrum.API.Interfaces.Plugins;
 using Spectrum.API.Interfaces.Systems;
+using Spectrum.API.Configuration;
 using System;
 using System.Net.Sockets;
 using System.Text;
@@ -16,6 +17,7 @@ namespace DistanceAutosplitter
         public string Author => "Matthew Tavendale";
         public string Contact => "@TntMatthew#3201 on Discord";
         public APILevel CompatibleAPILevel => APILevel.XRay;
+        Settings settings = new Settings(typeof(Entry));
 
         TimeSpan totalElapsedTime = new TimeSpan();
         bool inLoad = false;
@@ -33,6 +35,16 @@ namespace DistanceAutosplitter
 
         public void Initialize(IManager manager)
         {
+            if (!settings.ContainsKey("category"))
+            {
+                settings.Add("category", "Adventure");
+                settings.Save();
+            }
+            else
+            {
+                category = settings.GetItem<string>("category");
+            }
+
             if (category == "Adventure")
             {
                 firstLevel = "Broken Symmetry";
