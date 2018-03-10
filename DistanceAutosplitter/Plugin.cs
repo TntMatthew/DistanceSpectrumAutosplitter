@@ -25,6 +25,10 @@ namespace DistanceAutosplitter
 
         Socket livesplitSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+        string firstLevel = "Broken Symmetry";
+        string lastLevel = "Elevation";
+        string[] noReset = { "Credits", "The Manor" };
+
         public void Initialize(IManager manager)
         {
             try
@@ -40,7 +44,7 @@ namespace DistanceAutosplitter
 
             Race.Loaded += (sender, args) =>
             {
-                if (!started && (Game.LevelName == "Broken Symmetry" || Game.LevelName == "Dodge"))
+                if (!started && Game.LevelName == firstLevel)
                 {
                     if (!livesplitSocket.Connected)
                     {
@@ -70,10 +74,14 @@ namespace DistanceAutosplitter
                     }
                     SendData("pausegametime");
                     inLoad = true;
-                    if (Game.LevelName == "Credits" || Game.LevelName == "The Manor" || Game.LevelName == "Elevation")
+                    if (Game.LevelName == lastLevel)
                     {
                         totalElapsedTime = new TimeSpan();
                         started = false;
+                        justFinished = true;
+                    }
+                    else if (Array.Exists(noReset, levelName => levelName == Game.LevelName))
+                    {
                         justFinished = true;
                     }
                 }
@@ -81,7 +89,7 @@ namespace DistanceAutosplitter
 
             Race.Started += (sender, args) =>
             {
-                if (Game.LevelName == "Broken Symmetry" || Game.LevelName == "Dodge")
+                if (Game.LevelName == firstLevel)
                 {
                     SendData("starttimer");
                     started = true;
