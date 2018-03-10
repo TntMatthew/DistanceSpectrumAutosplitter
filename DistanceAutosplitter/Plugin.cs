@@ -105,6 +105,20 @@ namespace DistanceAutosplitter
                         }
                     }
                 }
+
+                if (livesplitSocket.Connected && started)
+                {
+                    SendData("getcurrenttimerphase");
+                    byte[] responseBytes = new byte[256];
+                    livesplitSocket.Receive(responseBytes);
+                    string responseString = Encoding.UTF8.GetString(responseBytes);
+                    Console.WriteLine(responseString);
+                    if (responseString.StartsWith("NotRunning"))
+                    {
+                        totalElapsedTime = new TimeSpan();
+                        started = false;
+                    }
+                }
             };
 
             LocalVehicle.Finished += (sender, args) =>
