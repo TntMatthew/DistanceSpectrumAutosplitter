@@ -138,7 +138,7 @@ namespace DistanceAutosplitter
 
         public void Shutdown()
         {
-
+        
         }
    
         void SendData(string command)
