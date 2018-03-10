@@ -23,14 +23,47 @@ namespace DistanceAutosplitter
         bool started = false;
         bool justFinished = false;
 
+        string category = "Adventure";
+
         Socket livesplitSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-        string firstLevel = "Broken Symmetry";
-        string lastLevel = "Elevation";
-        string[] noReset = { "Credits", "The Manor" };
+        string firstLevel;
+        string lastLevel;
+        string[] noReset;
 
         public void Initialize(IManager manager)
         {
+            if (category == "Adventure")
+            {
+                firstLevel = "Broken Symmetry";
+                lastLevel = "Credits";
+                noReset = new string[0];
+            }
+            else if (category == "Sprint SS")
+            {
+                firstLevel = "Broken Symmetry";
+                lastLevel = "The Manor";
+                noReset = new string[0];
+            }
+            else if (category == "Challenge SS")
+            {
+                firstLevel = "Dodge";
+                lastLevel = "Elevation";
+                noReset = new string[0];
+            }
+            else if (category == "All Arcade Levels")
+            {
+                firstLevel = "Broken Symmetry";
+                lastLevel = "Elevation";
+                noReset = new string[]{ "The Manor" };
+            }
+            else if (category == "All Levels")
+            {
+                firstLevel = "Broken Symmetry";
+                lastLevel = "Elevation";
+                noReset = new string[]{ "Credits", "The Manor" };
+            }
+
             try
             {
                 livesplitSocket.Connect("localhost", 16834);
