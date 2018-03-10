@@ -29,9 +29,9 @@ namespace DistanceAutosplitter
 
         Socket livesplitSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-        string firstLevel;
-        string lastLevel;
-        string[] noReset;
+        string firstLevel = "Broken Symmetry";
+        string lastLevel = "Credits";
+        string[] noReset = new string[0];
 
         public void Initialize(IManager manager)
         {
