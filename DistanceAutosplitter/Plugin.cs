@@ -125,8 +125,9 @@ namespace DistanceAutosplitter
             {
                 if (started)
                 {
-                    totalElapsedTime += Race.ElapsedTime;
-                    SendData($"setgametime {totalElapsedTime.TotalSeconds + 0.01}");
+                    totalElapsedTime += TimeSpan.FromMilliseconds(args.FinalTime);
+                    Console.WriteLine($"{totalElapsedTime.TotalSeconds} - {Race.ElapsedTime.TotalSeconds} - {TimeSpan.FromMilliseconds(args.FinalTime).TotalSeconds}");
+                    SendData($"setgametime {totalElapsedTime.TotalSeconds}");
                     if (args.Type == RaceEndType.Finished)
                     {
                         SendData("split");
@@ -186,6 +187,7 @@ namespace DistanceAutosplitter
                 {
                     if (!paused)
                     {
+                        Console.WriteLine($"{elapsedTime.TotalSeconds} - {Race.ElapsedTime.TotalSeconds}");
                         SendData($"setgametime {elapsedTime.TotalSeconds}");
                         SendData("pausegametime");
                         paused = true;
