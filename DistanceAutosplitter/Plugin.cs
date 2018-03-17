@@ -86,7 +86,6 @@ namespace DistanceAutosplitter
                     byte[] responseBytes = new byte[256];
                     livesplitSocket.Receive(responseBytes);
                     string responseString = Encoding.UTF8.GetString(responseBytes);
-                    Console.WriteLine(responseString);
                     if (responseString.StartsWith("NotRunning"))
                     {
                         totalElapsedTime = new TimeSpan();
@@ -99,8 +98,10 @@ namespace DistanceAutosplitter
             {
                 if (started)
                 {
-                    totalElapsedTime += TimeSpan.FromMilliseconds(args.FinalTime);
-                    Console.WriteLine($"{totalElapsedTime.TotalSeconds} - {Race.ElapsedTime.TotalSeconds} - {TimeSpan.FromMilliseconds(args.FinalTime).TotalSeconds}");
+                    var segmentTime = TimeSpan.FromMilliseconds(args.FinalTime);
+                    totalElapsedTime += segmentTime;
+                    Console.WriteLine($"Completed {Game.LevelName} with a segment time of {segmentTime.ToString()}");
+                    Console.WriteLine($"Total time: {totalElapsedTime.ToString()}");
                     SendData($"setgametime {totalElapsedTime.TotalSeconds}");
                     if (args.Type == RaceEndType.Finished)
                     {
@@ -174,7 +175,7 @@ namespace DistanceAutosplitter
                 {
                     if (!paused)
                     {
-                        Console.WriteLine($"{elapsedTime.TotalSeconds} - {Race.ElapsedTime.TotalSeconds}");
+                        Console.WriteLine($"Game paused. Current segment: {Race.ElapsedTime.ToString()}\nTotal time: {elapsedTime.ToString()}\n");
                         SendData($"setgametime {elapsedTime.TotalSeconds}");
                         SendData("pausegametime");
                         paused = true;
