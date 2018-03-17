@@ -31,7 +31,7 @@ namespace DistanceAutosplitter
 
         string firstLevel = "Broken Symmetry";
         string lastLevel = "Credits";
-        string[] noReset = new string[0];
+        string[] requiresMenuing = new string[0];
 
         public void Initialize(IManager manager)
         {
@@ -49,31 +49,31 @@ namespace DistanceAutosplitter
             {
                 firstLevel = "Broken Symmetry";
                 lastLevel = "Credits";
-                noReset = new string[0];
+                requiresMenuing = new string[0];
             }
             else if (category == "Sprint SS")
             {
                 firstLevel = "Broken Symmetry";
                 lastLevel = "The Manor";
-                noReset = new string[0];
+                requiresMenuing = new string[0];
             }
             else if (category == "Challenge SS")
             {
                 firstLevel = "Dodge";
                 lastLevel = "Elevation";
-                noReset = new string[0];
+                requiresMenuing = new string[0];
             }
             else if (category == "All Arcade Levels")
             {
                 firstLevel = "Broken Symmetry";
                 lastLevel = "Elevation";
-                noReset = new string[]{ "The Manor" };
+                requiresMenuing = new string[]{ "The Manor" };
             }
             else if (category == "All Levels")
             {
                 firstLevel = "Broken Symmetry";
                 lastLevel = "Elevation";
-                noReset = new string[]{ "Credits", "The Manor" };
+                requiresMenuing = new string[]{ "Credits", "The Manor" };
             }
 
             try
@@ -140,7 +140,7 @@ namespace DistanceAutosplitter
                         started = false;
                         justFinished = true;
                     }
-                    else if (Array.Exists(noReset, levelName => levelName == Game.LevelName))
+                    else if (Array.Exists(requiresMenuing, levelName => levelName == Game.LevelName))
                     {
                         justFinished = true;
                     }
