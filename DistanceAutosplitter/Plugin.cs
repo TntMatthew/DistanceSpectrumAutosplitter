@@ -76,36 +76,10 @@ namespace DistanceAutosplitter
                 requiresMenuing = new string[]{ "Credits", "The Manor" };
             }
 
-            try
-            {
-                livesplitSocket.Connect("localhost", 16834);
-                livesplitSocket.Send(Encoding.UTF8.GetBytes($"initgametime\r\n"));
-                Console.WriteLine("Connected successfully.");
-            }
-            catch (SocketException e)
-            {
-                Console.WriteLine($"Failed to connect to the LiveSplit server: {e.Message}");
-            }
+            AttemptLivesplitConnection();
 
             Race.Loaded += (sender, args) =>
             {
-                if (!started && Game.LevelName == firstLevel)
-                {
-                    if (!livesplitSocket.Connected)
-                    {
-                        try
-                        {
-                            livesplitSocket.Connect("localhost", 16834);
-                            livesplitSocket.Send(Encoding.UTF8.GetBytes($"initgametime\r\n"));
-                            Console.WriteLine("Connected successfully.");
-                        }
-                        catch (SocketException e)
-                        {
-                            Console.WriteLine($"Failed to connect to the LiveSplit server: {e.Message}");
-                        }
-                    }
-                }
-
                 if (livesplitSocket.Connected && started)
                 {
                     SendData("getcurrenttimerphase");
@@ -175,6 +149,13 @@ namespace DistanceAutosplitter
                 {
                     if (!started && data.sceneName_ == "GameMode" && G.Sys.GameManager_.NextLevelName_ == firstLevel)
                     {
+                        if (!livesplitSocket.Connected)
+                        {
+                            if (AttemptLivesplitConnection() == false)
+                            {
+                                return;
+                            }
+                        }
                         SendData("starttimer");
                         SendData("pausegametime");
                         started = true;
@@ -216,6 +197,22 @@ namespace DistanceAutosplitter
         
         }
    
+        bool AttemptLivesplitConnection()
+        {
+            try
+            {
+                livesplitSocket.Connect("localhost", 16834);
+                livesplitSocket.Send(Encoding.UTF8.GetBytes($"initgametime\r\n"));
+                Console.WriteLine("Connected successfully.");
+                return true;
+            }
+            catch (SocketException e)
+            {
+                Console.WriteLine($"Failed to connect to the LiveSplit server: {e.Message}");
+                return false;
+            }
+        }
+
         void SendData(string command)
         {
             if (livesplitSocket.Connected)
