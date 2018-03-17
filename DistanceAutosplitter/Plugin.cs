@@ -149,12 +149,7 @@ namespace DistanceAutosplitter
 
             Race.Started += (sender, args) =>
             {
-                if (Game.LevelName == firstLevel)
-                {
-                    SendData("starttimer");
-                    started = true;
-                }
-                else if (started)
+                if (started)
                 {
                     SendData("unpausegametime");
                 }
@@ -175,6 +170,17 @@ namespace DistanceAutosplitter
                     justFinished = false;
                 }
             };
+
+            Events.Scene.BeginSceneSwitchFadeOut.Subscribe(data =>
+                {
+                    if (!started && data.sceneName_ == "GameMode" && G.Sys.GameManager_.NextLevelName_ == firstLevel)
+                    {
+                        SendData("starttimer");
+                        SendData("pausegametime");
+                        started = true;
+                        inLoad = true;
+                    }
+                });
         }
 
         public void Update()
