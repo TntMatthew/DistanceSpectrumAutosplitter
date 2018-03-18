@@ -78,6 +78,24 @@ namespace DistanceAutosplitter
 
             AttemptLivesplitConnection();
 
+            Events.Scene.BeginSceneSwitchFadeOut.Subscribe(data =>
+            {
+                if (!started && data.sceneName_ == "GameMode" && G.Sys.GameManager_.NextLevelName_ == firstLevel)
+                {
+                    if (!livesplitSocket.Connected)
+                    {
+                        if (AttemptLivesplitConnection() == false)
+                        {
+                            return;
+                        }
+                    }
+                    SendData("starttimer");
+                    SendData("pausegametime");
+                    started = true;
+                    inLoad = true;
+                }
+            });
+
             Race.Loaded += (sender, args) =>
             {
                 if (livesplitSocket.Connected && started)
@@ -92,6 +110,15 @@ namespace DistanceAutosplitter
                         started = false;
                     }
                 }
+            };
+
+            Race.Started += (sender, args) =>
+            {
+                if (started)
+                {
+                    SendData("unpausegametime");
+                }
+                inLoad = false;
             };
 
             LocalVehicle.Finished += (sender, args) =>
@@ -122,15 +149,6 @@ namespace DistanceAutosplitter
                 }
             };
 
-            Race.Started += (sender, args) =>
-            {
-                if (started)
-                {
-                    SendData("unpausegametime");
-                }
-                inLoad = false;
-            };
-
             MainMenu.Loaded += (sender, args) =>
             {
                 if (started && !justFinished)
@@ -145,24 +163,6 @@ namespace DistanceAutosplitter
                     justFinished = false;
                 }
             };
-
-            Events.Scene.BeginSceneSwitchFadeOut.Subscribe(data =>
-                {
-                    if (!started && data.sceneName_ == "GameMode" && G.Sys.GameManager_.NextLevelName_ == firstLevel)
-                    {
-                        if (!livesplitSocket.Connected)
-                        {
-                            if (AttemptLivesplitConnection() == false)
-                            {
-                                return;
-                            }
-                        }
-                        SendData("starttimer");
-                        SendData("pausegametime");
-                        started = true;
-                        inLoad = true;
-                    }
-                });
         }
 
         public void Update()
