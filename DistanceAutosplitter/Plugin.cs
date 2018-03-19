@@ -153,6 +153,7 @@ namespace DistanceAutosplitter
             {
                 if (started && !justFinished)
                 {
+                    Console.WriteLine("Returned to main menu, resetting");
                     totalElapsedTime = new TimeSpan();
                     started = false;
                     inLoad = false;
