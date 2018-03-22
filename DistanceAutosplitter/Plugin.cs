@@ -17,7 +17,7 @@ namespace DistanceAutosplitter
     public class Entry : IPlugin, IUpdatable
     {
         public string FriendlyName => "Distance Autosplitter";
-        public string Author => "Matthew Tavendale";
+        public string Author => "TntMatthew";
         public string Contact => "@TntMatthew#3201 on Discord";
         public APILevel CompatibleAPILevel => APILevel.XRay;
         Settings settings = new Settings(typeof(Entry));
