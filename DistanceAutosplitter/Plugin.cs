@@ -214,7 +214,7 @@ namespace DistanceAutosplitter
         void ReloadCategory()
         {
             // spectrum has no settings reload method, so I'm just going to manually reread
-            // the JSON myself because screw now having a reload method
+            // the JSON myself because screw not having a reload method
             var reader = new JsonReader();
 
             var output = reader.Read<Dictionary<string, string>>(File.ReadAllText(Path.Combine(Defaults.SettingsDirectory, "DistanceAutosplitter.Plugin.json")));
