@@ -5,7 +5,6 @@ through LiveSplit Server.
 This is very early in development. I haven't actually used this in a full run yet, so I don't know if
 everything works properly (though it should). This supports quite a few categories. It is set to Adventure by
 default. If you want to change the category, you can edit the config file in `Distance_Data/Spectrum/Settings`.
-Currently, you will have to restart the game after doing this.
 
 The current available categories are Adventure, Sprint SS, Challenge SS, All Arcade Levels, and All Levels.
 If the `category` key in the aformentioned config file is not any one of those, it will use the default

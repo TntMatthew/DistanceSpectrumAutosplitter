@@ -5,9 +5,12 @@ using Spectrum.Interop.Game.Vehicle;
 using Spectrum.API.Interfaces.Plugins;
 using Spectrum.API.Interfaces.Systems;
 using Spectrum.API.Configuration;
+using JsonFx.Json;
+using System.IO;
 using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Collections.Generic;
 
 namespace DistanceAutosplitter
 {
@@ -45,54 +48,29 @@ namespace DistanceAutosplitter
                 category = settings.GetItem<string>("category");
             }
 
-            if (category == "Adventure")
-            {
-                firstLevel = "Broken Symmetry";
-                lastLevel = "Credits";
-                requiresMenuing = new string[0];
-            }
-            else if (category == "Sprint SS")
-            {
-                firstLevel = "Broken Symmetry";
-                lastLevel = "The Manor";
-                requiresMenuing = new string[0];
-            }
-            else if (category == "Challenge SS")
-            {
-                firstLevel = "Dodge";
-                lastLevel = "Elevation";
-                requiresMenuing = new string[0];
-            }
-            else if (category == "All Arcade Levels")
-            {
-                firstLevel = "Broken Symmetry";
-                lastLevel = "Elevation";
-                requiresMenuing = new string[]{ "The Manor" };
-            }
-            else if (category == "All Levels")
-            {
-                firstLevel = "Broken Symmetry";
-                lastLevel = "Elevation";
-                requiresMenuing = new string[]{ "Credits", "The Manor" };
-            }
+            SetCategoryInfo();
 
             AttemptLivesplitConnection();
 
             Events.Scene.BeginSceneSwitchFadeOut.Subscribe(data =>
             {
-                if (!started && data.sceneName_ == "GameMode" && G.Sys.GameManager_.NextLevelName_ == firstLevel)
+                if (!started)
                 {
-                    if (!livesplitSocket.Connected)
+                    ReloadCategory();
+                    if (data.sceneName_ == "GameMode" && G.Sys.GameManager_.NextLevelName_ == firstLevel)
                     {
-                        if (AttemptLivesplitConnection() == false)
+                        if (!livesplitSocket.Connected)
                         {
-                            return;
+                            if (AttemptLivesplitConnection() == false)
+                            {
+                                return;
+                            }
                         }
+                        SendData("starttimer");
+                        SendData("pausegametime");
+                        started = true;
+                        inLoad = true;
                     }
-                    SendData("starttimer");
-                    SendData("pausegametime");
-                    started = true;
-                    inLoad = true;
                 }
             });
 
@@ -190,15 +168,15 @@ namespace DistanceAutosplitter
                         paused = false;
                     }
                 }
-                
+
             }
         }
 
         public void Shutdown()
         {
-        
+
         }
-   
+
         bool AttemptLivesplitConnection()
         {
             try
@@ -230,6 +208,51 @@ namespace DistanceAutosplitter
                     livesplitSocket.Disconnect(false);
                     livesplitSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 }
+            }
+        }
+
+        void ReloadCategory()
+        {
+            // spectrum has no settings reload method, so I'm just going to manually reread
+            // the JSON myself because screw now having a reload method
+            var reader = new JsonReader();
+
+            var output = reader.Read<Dictionary<string, string>>(File.ReadAllText(Path.Combine(Defaults.SettingsDirectory, "DistanceAutosplitter.Plugin.json")));
+            category = output["category"];
+            SetCategoryInfo();
+        }
+
+        void SetCategoryInfo()
+        {
+            if (category == "Adventure")
+            {
+                firstLevel = "Broken Symmetry";
+                lastLevel = "Credits";
+                requiresMenuing = new string[0];
+            }
+            else if (category == "Sprint SS")
+            {
+                firstLevel = "Broken Symmetry";
+                lastLevel = "The Manor";
+                requiresMenuing = new string[0];
+            }
+            else if (category == "Challenge SS")
+            {
+                firstLevel = "Dodge";
+                lastLevel = "Elevation";
+                requiresMenuing = new string[0];
+            }
+            else if (category == "All Arcade Levels")
+            {
+                firstLevel = "Broken Symmetry";
+                lastLevel = "Elevation";
+                requiresMenuing = new string[] { "The Manor" };
+            }
+            else if (category == "All Levels")
+            {
+                firstLevel = "Broken Symmetry";
+                lastLevel = "Elevation";
+                requiresMenuing = new string[] { "Credits", "The Manor" };
             }
         }
     }
