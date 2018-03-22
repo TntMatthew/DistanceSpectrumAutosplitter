@@ -27,4 +27,4 @@ it will re-attempt just before you start a run.
 You then need to install Distance Autosplitter plugin. Grab the latest .dll from the
 [releases page](https://github.com/TntMatthew/DistanceSpectrumAutosplitter/releases), and drop
 it in your `Distance_Data/Spectrum/Plugins` directory. And you're done - the timer will
-automatically start once IGT begins, and will split after each level is completed.S
+automatically start once IGT begins, and will split after each level is completed.
