@@ -2,7 +2,7 @@
 This is a Spectrum plugin that provides automatic splits, resets, and an IGT timer for Distance speedruns
 through LiveSplit Server.
 
-This is pretty much fully functional at this point, though there may be a few bugs and egde cases that I
+This is pretty much fully functional at this point, though there may be a few bugs and edge cases that I
 haven't considered. The only real thing this lacks is that the splits are not customizable, they are hardcoded.
 I'm not sure if I'll bother changing that, though since this is open source, you can feel free to do whatever.
 
