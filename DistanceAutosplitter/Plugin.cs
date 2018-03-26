@@ -34,6 +34,8 @@ namespace DistanceAutosplitter
         string firstLevel = "Broken Symmetry";
         string lastLevel = "Credits";
         string[] requiresMenuing = new string[0];
+        GameModeID categoryMode = GameModeID.Adventure;
+        
 
         public void Initialize(IManager manager)
         {
@@ -56,7 +58,8 @@ namespace DistanceAutosplitter
                 if (!started)
                 {
                     ReloadCategory();
-                    if (data.sceneName_ == "GameMode" && G.Sys.GameManager_.NextLevelName_ == firstLevel)
+                    if (data.sceneName_ == "GameMode" && G.Sys.GameManager_.NextLevelName_ == firstLevel &&
+                        G.Sys.GameManager_.NextGameModeID_ == categoryMode)
                     {
                         if (!livesplitSocket.Connected)
                         {
@@ -228,30 +231,35 @@ namespace DistanceAutosplitter
                 firstLevel = "Broken Symmetry";
                 lastLevel = "Credits";
                 requiresMenuing = new string[0];
+                categoryMode = GameModeID.Adventure;
             }
             else if (category == "Sprint SS")
             {
                 firstLevel = "Broken Symmetry";
                 lastLevel = "The Manor";
                 requiresMenuing = new string[0];
+                categoryMode = GameModeID.Sprint;
             }
             else if (category == "Challenge SS")
             {
                 firstLevel = "Dodge";
                 lastLevel = "Elevation";
                 requiresMenuing = new string[0];
+                categoryMode = GameModeID.Challenge;
             }
             else if (category == "All Arcade Levels")
             {
                 firstLevel = "Broken Symmetry";
                 lastLevel = "Elevation";
                 requiresMenuing = new string[] { "The Manor" };
+                categoryMode = GameModeID.Sprint;
             }
             else if (category == "All Levels")
             {
                 firstLevel = "Broken Symmetry";
                 lastLevel = "Elevation";
                 requiresMenuing = new string[] { "Credits", "The Manor" };
+                categoryMode = GameModeID.Adventure;
             }
         }
     }
