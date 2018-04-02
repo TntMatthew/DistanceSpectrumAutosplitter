@@ -20,6 +20,10 @@ It should handle it just fine.
 We'll see. 
 
 ## How to use
+[New!] Super easy PowerShell script that does all of this for you: https://gist.github.com/TntMatthew/9a9688814ad44efb64c56271eca111f8  
+This isn't able to update LiveSplit Server or Spectrum, you'll have to do that manually,
+but this does make the initial install if you don't have anything set up much more convenient.
+
 First, install the LiveSplit Server component: https://github.com/LiveSplit/LiveSplit.Server/releases
 
 After you've done that, you need to add the LiveSplit Server component to your layout. Then right-click on
