@@ -105,10 +105,19 @@ namespace DistanceAutosplitter
             {
                 if (started)
                 {
-                    var segmentTime = TimeSpan.FromMilliseconds(args.FinalTime);
+                    TimeSpan segmentTime;
+                    if (args.Type == RaceEndType.Finished)
+                    {
+                        segmentTime = TimeSpan.FromMilliseconds(args.FinalTime);
+                    }
+                    else
+                    {
+                        segmentTime = Race.ElapsedTime;
+                    }
                     totalElapsedTime += segmentTime;
                     Console.WriteLine($"Completed {Game.LevelName} with a segment time of {segmentTime.ToString()}");
                     Console.WriteLine($"Total time: {totalElapsedTime.ToString()}");
+                    Console.WriteLine($"Race End Type: {args.Type.ToString()}");
                     SendData($"setgametime {totalElapsedTime.TotalSeconds}");
                     if (args.Type == RaceEndType.Finished)
                     {
@@ -201,6 +210,7 @@ namespace DistanceAutosplitter
             {
                 try
                 {
+                    Console.WriteLine("Sending: " + command);
                     livesplitSocket.Send(Encoding.UTF8.GetBytes($"{command}\r\n"));
                 }
                 catch (SocketException e)
