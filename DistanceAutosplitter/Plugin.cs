@@ -35,7 +35,6 @@ namespace DistanceAutosplitter
         string lastLevel = "Credits";
         string[] requiresMenuing = new string[0];
         GameModeID categoryMode = GameModeID.Adventure;
-        
 
         public void Initialize(IManager manager)
         {
