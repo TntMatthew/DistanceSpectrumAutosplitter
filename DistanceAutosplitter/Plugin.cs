@@ -124,15 +124,18 @@ namespace DistanceAutosplitter
                     }
                     SendData("pausegametime");
                     inLoad = true;
-                    if (Game.LevelName == lastLevel)
+                    if (args.Type == RaceEndType.Finished)
                     {
-                        totalElapsedTime = new TimeSpan();
-                        started = false;
-                        justFinished = true;
-                    }
-                    else if (Array.Exists(requiresMenuing, levelName => levelName == Game.LevelName))
-                    {
-                        justFinished = true;
+                        if (Game.LevelName == lastLevel)
+                        {
+                            totalElapsedTime = new TimeSpan();
+                            started = false;
+                            justFinished = true;
+                        }
+                        else if (Array.Exists(requiresMenuing, levelName => levelName == Game.LevelName))
+                        {
+                            justFinished = true;
+                        }
                     }
                 }
             };
