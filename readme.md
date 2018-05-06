@@ -20,6 +20,8 @@ It should handle it just fine.
 We'll see. 
 
 ## How to use
+(Full install instructions can be found here: https://gist.github.com/TntMatthew/1952952e0b039a9709233ba79194e57d)
+
 Install the LiveSplit server component: https://github.com/LiveSplit/LiveSplit.Server/releases
 
 After you've done that, you need to add the LiveSplit Server component to your layout. Then right-click on
